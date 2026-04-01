@@ -317,7 +317,7 @@ Apr  1, 00:00  isBuddyTeaserWindow() returns true for the first time
 
 All hidden commands, secret tools, environment variables, and workflows compiled in one document:
 
-**[Download the PDF](https://drive.google.com/file/d/11kr41zDHqmxxz9fFMFD44FC6aO9aZK1h/view?usp=sharing)**
+**[Google Drive PDF](https://drive.google.com/file/d/11kr41zDHqmxxz9fFMFD44FC6aO9aZK1h/view?usp=sharing)**
 
 ---
 
