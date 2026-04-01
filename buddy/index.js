@@ -180,26 +180,38 @@ function drawBuddy(buddy, showStats, hearts) {
   }
 
   console.log(`  ${C.dim}[p] pet  [r] reroll  [n] next species  [s] stats  [q] quit${C.reset}`)
-  console.log(`  ${C.dim}[u] enter user ID${C.reset}`)
   console.log()
 }
 
-// ── Main ────────────────────────────────────────────────────────────
+// (main function is at the bottom, after startup)
+
+// ── Startup ─────────────────────────────────────────────────────────
+// User ID: from command line OR auto-detect from machine
+// Usage: node index.js                     -> uses your machine identity
+//        node index.js myemail@gmail.com   -> uses your email
+//        node index.js anything            -> uses that as seed
+const os = require('os')
+const AUTO_ID = process.argv[2] || (os.userInfo().username + '@' + os.hostname())
+
 function main() {
-  let seed = Date.now().toString()
+  let seed = AUTO_ID
   let buddy = generateBuddy(seed)
   let showStats = false
   let hearts = 0
   let speciesIdx = 0
 
-  // Raw mode for keypress
   if (process.stdin.isTTY) {
     process.stdin.setRawMode(true)
   }
   process.stdin.resume()
   process.stdin.setEncoding('utf8')
 
-  drawBuddy(buddy, showStats, hearts)
+  // Show buddy immediately
+  clearScreen()
+  console.log(`  ${C.gold}${C.bold}YOUR BUDDY${C.reset} ${C.dim}(generated from: ${AUTO_ID})${C.reset}`)
+  console.log(`  ${C.dim}Salt: ${SALT}${C.reset}`)
+  console.log()
+  drawBuddy(buddy, false, 0)
 
   process.stdin.on('data', (key) => {
     if (key === 'q' || key === '\u0003') {
@@ -224,7 +236,6 @@ function main() {
 
     if (key === 'n') {
       speciesIdx = (speciesIdx + 1) % SPECIES.length
-      // Generate with species forced
       seed = SPECIES[speciesIdx].name + Date.now().toString()
       buddy = generateBuddy(seed)
       drawBuddy(buddy, showStats, hearts)
@@ -237,40 +248,8 @@ function main() {
       return
     }
 
-    if (key === 'u') {
-      // Switch to line mode for input
-      if (process.stdin.isTTY) process.stdin.setRawMode(false)
-      const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
-      rl.question(`\n  ${C.gold}Enter your user ID: ${C.reset}`, (answer) => {
-        rl.close()
-        if (answer.trim()) {
-          seed = answer.trim()
-          buddy = generateBuddy(seed)
-        }
-        if (process.stdin.isTTY) process.stdin.setRawMode(true)
-        drawBuddy(buddy, showStats, hearts)
-      })
-      return
-    }
+    // To use a custom ID, restart with: node index.js yourID
   })
 }
 
-// ── Startup ─────────────────────────────────────────────────────────
-clearScreen()
-console.log(`
-  ${C.gold}${C.bold}BUDDY PET${C.reset}
-  ${C.dim}Extracted from Claude Code source leak (March 31, 2026)${C.reset}
-  ${C.dim}Salt: ${SALT}${C.reset}
-  ${C.dim}18 species | 5 rarity levels | 5 personality stats${C.reset}
-
-  ${C.cyan}Press any key to meet your buddy...${C.reset}
-`)
-
-if (process.stdin.isTTY) {
-  process.stdin.setRawMode(true)
-}
-process.stdin.resume()
-process.stdin.setEncoding('utf8')
-process.stdin.once('data', () => {
-  main()
-})
+main()

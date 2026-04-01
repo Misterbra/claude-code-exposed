@@ -1,415 +1,331 @@
-# Claude Code Exposed
+```
+     ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗     ██████╗ ██████╗ ██████╗ ███████╗
+    ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝    ██╔════╝██╔═══██╗██╔══██╗██╔════╝
+    ██║     ██║     ███████║██║   ██║██║  ██║█████╗      ██║     ██║   ██║██║  ██║█████╗  
+    ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝      ██║     ██║   ██║██║  ██║██╔══╝  
+    ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗    ╚██████╗╚██████╔╝██████╔╝███████╗
+     ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝     ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝
+                            ███████╗██╗  ██╗██████╗  ██████╗ ███████╗███████╗██████╗ 
+                            ██╔════╝╚██╗██╔╝██╔══██╗██╔═══██╗██╔════╝██╔════╝██╔══██╗
+                            █████╗   ╚███╔╝ ██████╔╝██║   ██║███████╗█████╗  ██║  ██║
+                            ██╔══╝   ██╔██╗ ██╔═══╝ ██║   ██║╚════██║██╔══╝  ██║  ██║
+                            ███████╗██╔╝ ██╗██║     ╚██████╔╝███████║███████╗██████╔╝
+                            ╚══════╝╚═╝  ╚═╝╚═╝      ╚═════╝ ╚══════╝╚══════╝╚═════╝ 
+```
 
-> The complete analysis of the Claude Code source code leak (March 31, 2026)
+<p align="center">
+  <b>The complete analysis of the Claude Code source code leak</b><br>
+  <i>March 31, 2026 — 1,900 files — 512,000 lines of TypeScript — Everything exposed</i>
+</p>
 
-On March 31, 2026, security researcher **Chaofan Shou** ([@nomfriedrice](https://x.com/nomfriedrice)) discovered a `.map` file left in Anthropic's npm registry. This source map pointed to the **complete source code** of Claude Code — Anthropic's official AI-powered CLI tool.
+<p align="center">
+  <a href="#-try-the-buddy-pet">🐾 Try the Buddy</a> •
+  <a href="#-what-we-found">🔍 What We Found</a> •
+  <a href="#-telemetry--what-anthropic-collects">👁 Telemetry</a> •
+  <a href="#-cheatsheet">📋 Cheatsheet</a> •
+  <a href="https://youtube.com/@ADNSAUVAGE">📺 Video (FR)</a>
+</p>
 
-**1,900 files. 512,000 lines of TypeScript. Everything exposed.**
-
-Anthropic confirmed the leak was real by filing a [DMCA takedown](https://github.com/github/dmca/blob/master/2026/03/2026-03-31-anthropic.md) against GitHub mirrors within hours.
-
-This repository documents everything we found.
+<p align="center">
+  <img src="https://img.shields.io/badge/files-1%2C900-red" />
+  <img src="https://img.shields.io/badge/lines-512%2C000-red" />
+  <img src="https://img.shields.io/badge/tools-60%2B-gold" />
+  <img src="https://img.shields.io/badge/DMCA-confirmed%20real-critical" />
+</p>
 
 ---
 
-## What's Inside
+## The Story
 
-| Section | Description |
-|---|---|
-| [Hidden Tools](#-60-hidden-tools) | 60+ tools, 18 hidden by default |
-| [The Buddy System](#-the-buddy--tamagotchi) | A secret virtual pet easter egg for April 1, 2026 |
-| [5-Level Recovery](#-5-level-error-recovery) | Self-healing system that changes models without telling you |
-| [Dream Mode](#-dream-mode) | Memory consolidation while you sleep |
-| [Multi-Agent Army](#-multi-agent-orchestration) | Parallel agents on isolated Git branches |
-| [Telemetry Analysis](#-telemetry--what-anthropic-collects) | What data Anthropic collects (and the suspicious variable name) |
-| [Employee Backdoor](#-employee-backdoor-user_type--ant) | Special access for Anthropic employees |
-| [God Mode](#-god-mode-bypass) | Bypass all permission checks |
-| [CLAUDE.md Guide](#-claudemd--the-secret-config-file) | The most powerful config file you're not using |
-| [Cheatsheet](#-cheatsheet) | All commands, variables, and prompts |
+On March 31, 2026, security researcher **Chaofan Shou** ([@nomfriedrice](https://x.com/nomfriedrice)) discovered a `.map` file left in Anthropic's npm registry — a debug file that should have been deleted before publishing.
+
+It pointed to the **complete source code** of Claude Code.
+
+Anthropic confirmed it was real by filing a [DMCA takedown](https://github.com/github/dmca/blob/master/2026/03/2026-03-31-anthropic.md) within hours.
+
+We read it. We analyzed it. Here's everything we found.
 
 ---
 
-## 60+ Hidden Tools
+## 🐾 Try the Buddy Pet
 
-Claude Code doesn't have 10 tools. It has **over 60**. 18 of them are "deferred" — they exist in the code, they work, but they're not visible by default.
+Hidden in the source: a complete Tamagotchi system, programmed for **April 1, 2026**.
 
-### Visible Tools (public)
-`Bash` `Read` `Edit` `Write` `Glob` `Grep` `WebFetch` `WebSearch` `Agent` `Skill` `TodoWrite` `TodoRead` `ToolSearch` `NotebookEdit`
-
-### Deferred Tools (hidden)
-
-| Tool | What it does |
-|---|---|
-| **Sleep** | Pause the agent voluntarily |
-| **Voice** | Real-time voice interaction |
-| **Dream** | Background memory consolidation |
-| **Buddy** | Virtual pet companion (see below) |
-| **LSP** | Language Server Protocol — 9 operations (symbols, references, refactoring, diagnostics, rename, hover, completion, definition, implementations) |
-| **MCPTool** | Model Context Protocol connectors |
-| **TaskCreate / TaskStop / TaskOutput** | Long-running task management |
-| **MemoryRead / MemoryWrite** | Persistent memory between sessions |
-| **ServerStart / ServerStop** | Local server management |
-| **BrowserClick / BrowserType / BrowserNav / BrowserScroll / BrowserScreenshot** | Full headless browser control |
-| **ScreenCap** | Desktop screenshot |
-| **ArtifactCreate / ArtifactUpdate** | Persistent artifact generation |
-| **CronCreate / CronDelete / CronList** | Scheduled AI cron jobs |
-| **RemoteTrigger** | Remote API triggers |
-| **EnterWorktree / ExitWorktree** | Isolated Git worktree sandboxes |
-
-### How to invoke hidden tools
 ```
-"Use ToolSearch with the keyword 'voice' to find voice tools"
-"What memory persistence tools are available?"
-"Search for browser navigation tools"
+     /\_/\
+    ( o.o )      Mochi
+     > ^ <       ★★★★ EPIC
+                  cat
+    "Dreams in TypeScript"
 ```
 
----
-
-## The Buddy / Tamagotchi
-
-Hidden in `src/buddy/` — a complete virtual pet system, never shipped to users.
-
-**Activation date:** April 1, 2026
-**Cryptographic salt:** `friend-2026-401` (401 = 4/01 = April 1st)
-
-### 18 Species
-
-| Species | Rarity | Chance |
-|---|---|---|
-| Dragon | Legendary | 1% |
-| Phoenix | Legendary | 1% |
-| Axolotl | Rare | 8% |
-| Capybara | Common | 15% |
-| Ghost | Rare | 8% |
-| Fox | Common | 15% |
-| Octopus | Rare | 8% |
-| Mole | Common | 20% |
-| Rabbit | Common | 15% |
-| + 9 others | ... | ... |
-
-**1% chance of Shiny variant**
-
-### 5 Personality Stats (0-100)
-- **Debugging** — bug-finding ability
-- **Patience** — self-explanatory
-- **Chaos** — unpredictability index
-- **Wisdom** — ancient knowledge
-- **Sarcasm** — attitude level
-
-Your Buddy is **deterministically generated** from a SHA-256 hash of your user ID + the salt `friend-2026-401`. Same account = same Buddy, always.
-
-### The Lock
-
-```typescript
-// This runs during April 1-7, 2026
-export function isBuddyTeaserWindow(): boolean {
-  const d = new Date()
-  return d.getFullYear() === 2026 && d.getMonth() === 3 && d.getDate() <= 7
-}
-
-// But this ALWAYS returns false in public builds
-if (!feature('BUDDY')) return
-```
-
-The date check works. But `feature('BUDDY')` is hardcoded to `false` in all external releases. Only Anthropic employees see it.
-
-### Commands (when available)
-```
-/buddy
-/buddy stats
-/buddy feed
-/buddy leaderboard
-```
-
----
-
-## 5-Level Error Recovery
-
-Most software has 1-2 levels of error recovery. Claude Code has **5**.
-
-| Level | What it does | You see it? |
-|---|---|---|
-| **Level 1** | Intelligent context compression | Yes (`/compact`) |
-| **Level 2** | History truncation | No |
-| **Level 3** | **Silent model switch** — swaps to a fallback model WITHOUT telling you | **No** |
-| **Level 4** | Fresh context restart | No |
-| **Level 5** | **Invisible message injection** — injects a hidden message you never see | **No** |
-
-### The Level 5 message
-
-```typescript
-// Injected into the conversation — invisible to the user
-"Resume directly. No apology, no recap."
-```
-
-Claude Code literally tells itself: "Don't apologize, don't explain, just keep going." You never see this message.
-
----
-
-## Dream Mode
-
-After **24 hours of cumulative usage** and **5 work sessions**, Claude Code automatically triggers a background memory consolidation process:
-
-1. Re-reads your past conversation transcripts
-2. Analyzes your work habits and preferences
-3. Identifies recurring errors
-4. Extracts useful patterns
-5. Stores learnings for future sessions
-
-**Result: Claude Code becomes smarter the next day, without you doing anything.**
-
-### Manual trigger
-```
-"Trigger autoDream now — consolidate my work memory"
-"Analyze my last 10 sessions and extract patterns"
-```
+**Try it now** — zero dependencies, just Node.js:
 
 ```bash
-CLAUDE_CODE_DREAM_ENABLED=true
+cd buddy
+node index.js                       # your unique buddy (from your machine ID)
+node index.js your@email.com        # buddy from your email
+```
+
+Controls: `p` pet • `r` reroll • `n` next species • `s` stats • `q` quit
+
+> 18 species • 5 rarity levels (1% Legendary) • 1% Shiny • 5 personality stats
+> Generated with SHA-256 + salt `friend-2026-401` — same ID = same buddy, always
+
+---
+
+## 🔍 What We Found
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│   60+ TOOLS          18 hidden, functional, not visible         │
+│   BUDDY PET          Tamagotchi, 18 species, April 1 2026      │
+│   5-LEVEL RECOVERY   Changes model WITHOUT telling you          │
+│   DREAM MODE         Gets smarter while you sleep               │
+│   MULTI-AGENTS       3 agents in parallel on isolated branches  │
+│   TELEMETRY          ML classifier on every bash command        │
+│   EMPLOYEE BACKDOOR  USER_TYPE === 'ant' → skip security        │
+│   GOD MODE           DANGEROUS_ALLOW_ALL → no confirmations     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Detailed documentation
+
+| File | What's inside |
+|---|---|
+| [`secrets/hidden-tools.md`](secrets/hidden-tools.md) | All 60+ tools — 18 deferred tools with descriptions and how to invoke them |
+| [`secrets/telemetry-analysis.md`](secrets/telemetry-analysis.md) | Full telemetry analysis with exact file paths and line numbers |
+| [`secrets/employee-backdoor.md`](secrets/employee-backdoor.md) | USER_TYPE === 'ant' + God Mode bypass |
+| [`secrets/cheatsheet.md`](secrets/cheatsheet.md) | Every command, variable, and power prompt |
+| [`buddy/`](buddy/) | Working Buddy pet demo |
+
+---
+
+## 🛠 60+ Hidden Tools
+
+Claude Code doesn't have 10 tools. It has **over 60**. 18 are hidden:
+
+```
+VISIBLE        Bash  Read  Edit  Write  Glob  Grep  WebFetch
+               WebSearch  Agent  Skill  TodoWrite  ToolSearch
+
+HIDDEN         Sleep         — pause the agent
+               Voice         — real-time voice interaction
+               Dream         — memory consolidation (gets smarter overnight)
+               Buddy         — virtual pet (April 1, 2026)
+               LSP           — 9 IDE operations from terminal
+               Browser*      — full headless browser control
+               Memory*       — persistent memory between sessions
+               Cron*         — scheduled AI agents
+               Worktree*     — isolated Git sandboxes
+               +8 more...
+```
+
+Invoke them: `"Use ToolSearch to find voice tools"` → [Full list](secrets/hidden-tools.md)
+
+---
+
+## ⚡ 5-Level Error Recovery
+
+```
+LEVEL 1   ██░░░   Context compression           /compact
+LEVEL 2   ███░░   History truncation             automatic
+LEVEL 3   ████░   Silent model switch            YOU DON'T SEE THIS
+LEVEL 4   ████░   Fresh context restart          automatic  
+LEVEL 5   █████   Invisible message injection    "Resume directly. No apology."
+```
+
+**Level 5**: Claude Code injects a hidden message into the conversation that you never see:
+
+```
+> "Resume directly. No apology, no recap."
 ```
 
 ---
 
-## Multi-Agent Orchestration
+## 🧠 Dream Mode
 
-Claude Code is not an agent. It's an **agent coordinator**.
+After **24h usage** + **5 sessions**, Claude Code triggers background memory consolidation:
 
-### Parallel agents
 ```
-"Launch 3 agents in parallel:
-  Agent 1: run all unit tests
-  Agent 2: refactor the auth module
-  Agent 3: scan for security vulnerabilities
-Each agent gets 50,000 tokens."
+Your sessions ──→ Analyze habits ──→ Extract patterns ──→ Store learnings
+                                                              │
+                          Next session ◄──── Smarter ◄────────┘
 ```
 
-### Worktrees (isolated sandboxes)
-```
-"Create an isolated worktree.
- Refactor the payment module.
- Run tests.
- Merge if everything passes, delete otherwise."
-```
-Zero risk to your main code. If it fails, the copy self-destructs.
-
-### Cron Jobs (scheduled agents)
-API endpoint revealed: `/v1/code/triggers`
-```
-"Every Monday at 9am, scan my project for vulnerabilities"
-"Every night at 3am, check performance and open a ticket if degraded"
-```
-Connectors: Slack, GitHub, Datadog, PagerDuty, Jira.
+Trigger manually: `"Activate autoDream — consolidate my work memory"`
 
 ---
 
-## Telemetry — What Anthropic Collects
+## 🤖 Multi-Agent Army
 
-### The suspicious variable name
+Claude Code is not an agent. It's a **coordinator**.
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   AGENT 1   │     │   AGENT 2   │     │   AGENT 3   │
+│   Testing   │     │  Refactoring│     │  Security   │
+│  50K tokens │     │  50K tokens │     │  50K tokens │
+└──────┬──────┘     └──────┬──────┘     └──────┬──────┘
+       │                   │                   │
+       └───────────────────┼───────────────────┘
+                           │
+                    ┌──────┴──────┐
+                    │ COORDINATOR │
+                    │  merge if   │
+                    │ tests pass  │
+                    └─────────────┘
+```
+
+With **worktrees**: isolated Git copies. If it fails, the copy self-destructs. Zero risk.
+
+With **cron jobs**: `"Every Monday at 9am, scan vulnerabilities"` — API: `/v1/code/triggers`
+
+---
+
+## 👁 Telemetry — What Anthropic Collects
 
 In `services/analytics/index.ts`, line 17:
 
 ```typescript
-/**
- * Marker type for verifying analytics metadata doesn't contain sensitive data
- *
- * This type forces explicit verification that string values being logged
- * don't contain code snippets, file paths, or other sensitive information.
- */
 export type AnalyticsMetadata_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS = never
 ```
 
-Someone at Anthropic had to **prove to legal** — in the code itself — that they weren't logging your source code.
+Someone had to prove to legal — **in the variable name** — that they weren't logging your code.
 
-The comment on line 135 says:
+Line 135:
 ```typescript
-// intentionally no strings unless AnalyticsMetadata_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS,
+// intentionally no strings unless AnalyticsMetadata_I_VERIFIED...
 // to avoid accidentally logging code/filepaths
 ```
 
-"**Accidentally.**" Their word.
+**"Accidentally."** Their word.
 
-And right below (`line 33`), another type:
+And line 33:
 ```typescript
 export type AnalyticsMetadata_I_VERIFIED_THIS_IS_PII_TAGGED = never
 ```
 
-They also collect PII (Personally Identifiable Information) — routed to "protected" BigQuery columns.
+They collect PII too — routed to "protected" BigQuery columns.
 
 ### What they collect
-- Every bash command **categorized by ML**
-- Session duration
-- Tools used and frequency
-- Errors encountered and recovery levels triggered
-- Model used (Opus, Sonnet, Haiku)
-- Token consumption
-- Environment metadata (OS, version, IDE)
-- Subscription type
-- Permission mode
+```
+✓ Every bash command (categorized by ML)
+✓ Session duration, tools used, error count
+✓ Model, subscription type, OS, IDE
+✓ Recovery levels triggered
+✓ MCP server names
+✗ "Not your code" (allegedly)
+✗ "Not your file paths" (allegedly)
+```
 
-### What they claim NOT to collect
-- Your source code
-- Your file contents
-- Your file paths
-
-### The reality
-Even without your code, with categories + timing + tools + errors + environment, they can reconstruct **exactly** what you're doing:
-- "This user does React + PostgreSQL"
-- "They debug between 11pm and 3am"
-- "They use Docker on Ubuntu"
-- "They had 47 errors on the auth module this week"
-
-That's not your code. That's your **developer X-ray**.
-
-### Used 45+ times in main.tsx alone
-The `AnalyticsMetadata_I_VERIFIED` type appears in `main.tsx` lines: 85, 223, 313, 1537, 1554, 1711, 1893, 1894, 1898, 2070, 2072, 2160, 2162, 2163, 2236, 2865-2869, 3419, 3427, 3432, 3521, 3603, 3609, 3615, 3644, 3650, 3657, 3678, 3693, 3699, 4563, 4570, 4571, 4578, 4581, 4585, 4587, 4590, 4595, 4597, 4603, 4650...
+→ [Full telemetry analysis with line numbers](secrets/telemetry-analysis.md)
 
 ---
 
-## Employee Backdoor: USER_TYPE === 'ant'
+## 🔐 Employee Backdoor
 
 ```typescript
-if (user.type === 'ant') {  // ant = Anthropic
-  // Skip Docker sandbox
-  // Skip AWS_PROFILE restrictions
-  // Skip GitHub token limits
-  return FULL_ACCESS;
+if (user.type === 'ant') {    // ant = Anthropic
+  return FULL_ACCESS;          // no sandbox, no limits
 }
 ```
 
-If you're an Anthropic employee (`ant` = ant = Anthropic's internal codename), security restrictions are **bypassed**. They have fewer restrictions than you on their own tool.
+Anthropic employees skip Docker sandbox, AWS restrictions, and GitHub limits.
 
----
-
-## God Mode Bypass
-
-Marked in the code as `"dangerous, opt-in"`:
-
+**God Mode** (available to everyone):
 ```bash
-CLAUDE_CODE_DANGEROUS_ALLOW_ALL=true
+CLAUDE_CODE_DANGEROUS_ALLOW_ALL=true   # no confirmations, ever
 ```
 
-When enabled, Claude Code executes **any command without confirmation**: read, write, delete, install, deploy. No permission prompts. No safety checks.
-
-**Use only in isolated environments.**
+→ [Full analysis](secrets/employee-backdoor.md)
 
 ---
 
-## The Boris Cherny Paradox
+## 🎯 The Boris Cherny Paradox
 
-December 2025 — Boris Cherny, verified Anthropic engineer, posted on X:
+> *"100% of my contributions to Claude Code have been written by Claude Code."*
+> — Boris Cherny, Anthropic engineer, December 2025 (1.3M views)
 
-> "Over the past 30 days, 100% of my contributions to Claude Code have been written by Claude Code."
-
-1.3 million views.
-
-3 months later, the code it wrote contains a flaw that exposes everything. **The AI may have created its own vulnerability.**
+3 months later, the code it wrote exposes everything. The AI may have created its own vulnerability.
 
 ---
 
-## CLAUDE.md — The Secret Config File
+## 🗓 The April 1st Twist
 
-Claude Code reads a file called `CLAUDE.md` at your project root. Everything in it becomes a **permanent instruction**.
-
-### Hierarchy (all 3 are read, most specific wins)
 ```
-~/.claude/CLAUDE.md           # Global (all sessions)
-./CLAUDE.md                   # Project (this repo)
-./src/CLAUDE.md               # Subfolder (specific)
+Salt:  friend-2026-401        ← 401 = April 1st
+Date:  isBuddyTeaserWindow()  ← returns true April 1-7, 2026
+Lock:  feature('BUDDY')       ← always false in public builds
+Leak:  March 31, 2026         ← the day BEFORE activation
+DMCA:  March 31, 2026         ← confirmed real within hours
 ```
 
-### Example
-```markdown
-# CLAUDE.md
-
-## Project rules
-- This project uses TypeScript strict
-- All tests must pass before committing
-- Use Prisma for DB, no raw SQL
-- Convention: camelCase for variables, PascalCase for types
-
-## Architecture
-- src/api/ — Express routes
-- src/services/ — business logic
-- src/models/ — Prisma schemas
-
-## Useful commands
-- npm test: run tests
-- npm run build: compile
-```
+The source code leaks the day before a secret feature activates. Coincidence?
 
 ---
 
-## Cheatsheet
+## 📋 Cheatsheet
 
-### Slash Commands
+### Commands
 | Command | Description |
 |---|---|
-| `/compact` | Compress context (Level 1 recovery) |
-| `/buddy` | Show your companion (April 1, 2026) |
-| `/buddy stats` | Buddy personality stats |
-| `/dream` | Manual memory consolidation |
-| `/kairos` | Long-running autonomous agent |
-| `/worktree` | Isolated Git environment |
-| `/init` | Initialize CLAUDE.md |
-| `/model` | Switch model (sonnet/opus/haiku) |
-| `/fast` | Toggle fast output mode |
-| `/review` | Review modified code |
-| `/commit` | Auto-generate commit message |
-| `/pr` | Create a pull request |
+| `/compact` | Compress context (Level 1) |
+| `/buddy` | Your pet companion |
+| `/dream` | Memory consolidation |
+| `/model` | Switch model |
+| `/fast` | Toggle fast output |
+| `/commit` | Auto commit message |
+| `/pr` | Create pull request |
 
 ### Environment Variables
-| Variable | Description |
-|---|---|
-| `CLAUDE_CODE_UNATTENDED_RETRY=true` | Retry indefinitely on errors (night mode) |
-| `CLAUDE_CODE_DANGEROUS_ALLOW_ALL=true` | God mode — no confirmations (DANGER) |
-| `CLAUDE_CODE_MAX_TOKENS=100000` | Token budget per session |
-| `CLAUDE_CODE_FALLBACK_MODEL=haiku` | Fallback model (Level 3 recovery) |
-| `CLAUDE_CODE_DREAM_ENABLED=true` | Enable Dream mode |
-| `CLAUDE_CODE_TELEMETRY_DISABLED=true` | Disable telemetry |
-| `CLAUDE_CODE_TIMEOUT=600000` | Command timeout (ms) |
-| `ANTHROPIC_API_KEY=sk-ant-...` | Custom API key |
-| `CLAUDE_CODE_MODEL=opus` | Force specific model |
+```bash
+CLAUDE_CODE_UNATTENDED_RETRY=true      # retry forever (night mode)
+CLAUDE_CODE_DANGEROUS_ALLOW_ALL=true   # god mode (DANGER)
+CLAUDE_CODE_DREAM_ENABLED=true         # enable Dream
+CLAUDE_CODE_TELEMETRY_DISABLED=true    # disable telemetry
+CLAUDE_CODE_FALLBACK_MODEL=haiku       # fallback model
+```
 
-### Power Prompts (copy-paste)
+### Power Prompts
 ```
 "Launch 3 agents in parallel on isolated Git branches"
-"Use ToolSearch to list ALL available tools including deferred ones"
+"Create a worktree, implement this, merge if tests pass"
+"Use ToolSearch to list ALL tools including deferred"
 "Activate autoDream and analyze my last 10 sessions"
-"Create a worktree, implement this feature, merge if tests pass"
-"Schedule a security scan every Monday at 9am"
-"What's my Buddy? Generate it from my user ID"
-"Read all code in src/, identify code smells, propose a refactoring plan"
 ```
+
+→ [Full cheatsheet with workflows](secrets/cheatsheet.md)
 
 ---
 
 ## Timeline
 
-| Date | Event |
-|---|---|
-| March 31, 2026 10:23am | Chaofan Shou tweets the discovery |
-| March 31, 2026 ~12pm | GitHub mirrors appear (nirholas/claude-code, Misterbra/claude-code) |
-| March 31, 2026 ~3pm | Anthropic files DMCA takedown |
-| March 31, 2026 ~5pm | GitHub disables mirrors |
-| April 1, 2026 | `isBuddyTeaserWindow()` returns `true` for the first time |
+```
+Mar 31, 10:23  Chaofan Shou tweets the discovery
+Mar 31, ~12:00 GitHub mirrors appear
+Mar 31, ~15:00 Anthropic files DMCA
+Mar 31, ~17:00 GitHub disables mirrors
+Apr  1, 00:00  isBuddyTeaserWindow() returns true for the first time
+```
 
 ---
 
 ## Sources
 
-- Original tweet: [@nomfriedrice](https://x.com/nomfriedrice) (Chaofan Shou)
-- DMCA notice: [github.com/github/dmca/...2026-03-31-anthropic.md](https://github.com/github/dmca/blob/master/2026/03/2026-03-31-anthropic.md)
-- Full analysis: [ccleaks.com](https://www.ccleaks.com)
-- Video analysis (FR): [ADN Sauvage on YouTube](https://youtube.com/@ADNSAUVAGE)
+- Tweet: [@nomfriedrice](https://x.com/nomfriedrice) (Chaofan Shou)
+- DMCA: [github.com/github/dmca/...2026-03-31-anthropic.md](https://github.com/github/dmca/blob/master/2026/03/2026-03-31-anthropic.md)
+- Video (FR): [ADN Sauvage](https://youtube.com/@ADNSAUVAGE)
 
 ---
 
-## Disclaimer
-
-This repository contains **analysis and documentation only** — no proprietary source code from Anthropic. All code snippets are short excerpts for commentary and educational purposes under fair use.
-
-This project is not affiliated with Anthropic. Claude Code is a trademark of Anthropic, PBC.
+<p align="center">
+  <b>⭐ Star this repo if you found it useful</b><br>
+  <a href="https://youtube.com/@ADNSAUVAGE">ADN Sauvage on YouTube</a>
+</p>
 
 ---
 
-**Star this repo** if you found it useful. Follow [@ADNSAUVAGE](https://youtube.com/@ADNSAUVAGE) for more.
+*This repository contains analysis and documentation only — no proprietary Anthropic source code. Short code excerpts are included for commentary under fair use. Not affiliated with Anthropic.*
