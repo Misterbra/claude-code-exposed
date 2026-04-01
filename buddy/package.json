@@ -1,0 +1,11 @@
+{
+  "name": "buddy-pet",
+  "version": "1.0.0",
+  "description": "Hidden Tamagotchi from Claude Code source leak — 18 species, stats, rarity",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": ["claude-code", "buddy", "tamagotchi", "easter-egg", "april-fools"],
+  "license": "MIT"
+}
