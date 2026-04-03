@@ -310,15 +310,6 @@ Mar 31, ~15:00 Anthropic files DMCA
 Mar 31, ~17:00 GitHub disables mirrors
 Apr  1, 00:00  isBuddyTeaserWindow() returns true for the first time
 ```
-
----
-
-## Free PDF — Full Cheatsheet (13 pages)
-
-All hidden commands, secret tools, environment variables, and workflows compiled in one document:
-
-**[Google Drive PDF](https://drive.google.com/file/d/11kr41zDHqmxxz9fFMFD44FC6aO9aZK1h/view?usp=sharing)**
-
 ---
 
 *This repository contains analysis and documentation only — no proprietary Anthropic source code. Short code excerpts are included for commentary under fair use. Not affiliated with Anthropic.*
