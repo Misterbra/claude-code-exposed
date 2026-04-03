@@ -321,19 +321,4 @@ All hidden commands, secret tools, environment variables, and workflows compiled
 
 ---
 
-## Sources
-
-- Tweet: [@nomfriedrice](https://x.com/nomfriedrice) (Chaofan Shou)
-- DMCA: [github.com/github/dmca/...2026-03-31-anthropic.md](https://github.com/github/dmca/blob/master/2026/03/2026-03-31-anthropic.md)
-- Video (FR): [ADN Sauvage](https://youtube.com/@ADNSAUVAGE)
-
----
-
-<p align="center">
-  <b>⭐ Star this repo if you found it useful</b><br>
-  <a href="https://youtube.com/@ADNSAUVAGE">ADN Sauvage on YouTube</a>
-</p>
-
----
-
 *This repository contains analysis and documentation only — no proprietary Anthropic source code. Short code excerpts are included for commentary under fair use. Not affiliated with Anthropic.*
