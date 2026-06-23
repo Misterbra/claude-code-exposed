@@ -23,7 +23,6 @@
   <a href="#-what-we-found">🔍 What We Found</a> •
   <a href="#-telemetry--what-anthropic-collects">👁 Telemetry</a> •
   <a href="#-cheatsheet">📋 Cheatsheet</a> •
-  <a href="https://youtube.com/@ADNSAUVAGE">📺 Video (FR)</a>
 </p>
 
 <p align="center">
